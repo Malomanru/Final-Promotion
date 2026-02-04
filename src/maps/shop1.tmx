@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="22" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="194">
+ <editorsettings>
+  <export target="shop1.lua" format="lua"/>
+ </editorsettings>
+ <tileset firstgid="1" name="walls" tilewidth="16" tileheight="16" tilecount="391" columns="17">
+  <image source="../assets/tilesets/walls.png" width="272" height="368"/>
+ </tileset>
+ <tileset firstgid="392" name="Interiors" tilewidth="16" tileheight="16" tilecount="1536" columns="16">
+  <image source="../assets/tilesets/Interiors.png" width="256" height="1536"/>
+ </tileset>
+ <layer id="1" name="floor" width="22" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
+217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
+217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
+217,217,220,220,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
+217,217,220,220,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
+217,217,220,220,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
+217,217,220,220,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
+217,217,220,220,220,220,220,220,220,220,220,220,220,220,220,220,220,220,220,220,217,217,
+217,217,220,220,220,220,220,220,220,220,220,220,220,220,220,220,220,220,220,220,217,217,
+217,217,220,220,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,
+217,217,220,220,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217,217
+</data>
+ </layer>
+ <layer id="2" name="hills" width="22" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+296,332,333,331,332,333,331,332,333,331,332,332,332,331,332,333,331,332,333,331,332,3221225768,
+296,349,350,348,349,350,348,349,350,348,349,349,349,348,349,350,348,349,350,348,349,3221225768,
+296,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3221225768,
+296,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3221225768,
+296,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3221225768,
+296,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3221225768,
+296,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3221225768,
+296,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3221225768,
+296,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3221225768,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+350,0,0,0,307,308,309,307,308,309,307,308,309,307,308,309,307,308,309,307,308,309
+</data>
+ </layer>
+ <layer id="3" name="decor" width="22" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,1834,1835,1880,1881,1880,1881,1880,1881,1880,1881,1880,1881,0,0,0,0,0,0,0,0,0,
+0,1850,1851,1896,1897,1896,1897,1896,1897,1896,1897,1896,1897,0,0,0,0,0,0,0,0,0,
+0,1866,1867,1912,1913,1912,1913,1912,1913,1912,1913,1912,1913,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="5" name="decor2" width="22" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,1836,1837,1882,1883,1884,1885,1882,1883,1884,1885,1884,1885,0,0,0,0,0,0,0,0,0,
+0,1852,1853,1898,1899,1900,1901,1898,1899,1900,1901,1900,1901,0,0,0,0,0,0,0,0,0,
+0,1868,1869,1914,1915,1916,1917,1914,1915,1916,1917,1916,1917,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="6" name="colliders">
+  <object id="1" x="336" y="16" width="16" height="176"/>
+  <object id="174" x="0" y="16" width="16" height="176"/>
+ </objectgroup>
+ <objectgroup id="7" name="props">
+  <object id="175" name="walls/wall_3_middle" x="184" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="176" name="walls/wall_3_left" x="168" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="177" name="walls/wall_3_right" x="200" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="178" name="walls/wall_3_left" x="216" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="179" name="walls/wall_3_middle" x="136" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="180" name="walls/wall_3_left" x="120" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="181" name="walls/wall_3_right" x="152" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="182" name="walls/wall_3_middle" x="88" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="183" name="walls/wall_3_left" x="72" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="184" name="walls/wall_3_right" x="104" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="185" name="walls/wall_3_middle" x="280" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="186" name="walls/wall_3_left" x="264" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="187" name="walls/wall_3_right" x="296" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="188" name="walls/wall_2_left" x="312" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="189" name="walls/wall_3_middle" x="232" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="190" name="walls/wall_3_right" x="248" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="191" name="walls/wall_3_middle" x="328" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="192" name="walls/wall_3_right" x="344" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="193" name="walls/wall_2_left" x="8" y="168">
+   <properties>
+    <property name="&#10;transparency_when_inside" type="bool" value="true"/>
+    <property name="add_y" type="float" value="50"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+</map>

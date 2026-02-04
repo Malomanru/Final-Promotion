@@ -1,0 +1,33 @@
+{
+    "Lua.diagnostics.globals": [
+        "love",
+        "vector",
+        "require"
+    ],
+    "Lua.diagnostics.disable": [
+        "lowercase-global",
+        "missing-parameter",
+        "undefined-global",
+        "deprecated",
+        "undefined-field",
+        "redundant-parameter",
+        "param-type-mismatch",
+        "inject-field",
+        "duplicate-set-field",
+        "need-check-nil",
+        "discard-returns",
+        "different-requires",
+        "ambiguity-1",
+        "duplicate-index",
+        "unused-local"
+    ],
+    "cSpell.words": [
+        "keyreleased",
+        "mousepressed",
+        "mousereleased",
+        "npcs",
+        "scancode",
+        "textinput",
+        "windfield"
+    ]
+}
