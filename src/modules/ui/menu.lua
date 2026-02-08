@@ -29,7 +29,7 @@ function menu:init()
     })
     
     local buttons_config = {
-        {"PLAY", function() map:load("map2") _G.game.player = player.new() _G.game.player:setPosition(100, 100) self.active = false end},
+        {"PLAY", function() map:load("map2") _G.game.player = player.new() _G.game.player:setPosition(100, 100) self:hide() end},
         {"SETTINGS", function()
             libs.tween.new(0.4, self, {mainTitleAlpha = 0}, 'outQuad')
             for _, btn in pairs(self.window.content) do
@@ -199,8 +199,11 @@ function menu:showButtons()
     end
 end
 
-function menu:hide(direction, time)
+function menu:hide()
+    self.active = false
     self.window.flags.is_visible = false
+    self.window:setActiveElements("button", false)
+    self.window:setActiveElements("imageButton", false)
 end
 
 function menu:update(dt)

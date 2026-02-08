@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="29" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="62">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="29" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="63">
  <editorsettings>
   <export target="map2.lua" format="lua"/>
  </editorsettings>
@@ -280,6 +280,11 @@
    <properties>
     <property name="direction" value="down"/>
    </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="11" name="lights">
+  <object id="62" x="128" y="80">
    <point/>
   </object>
  </objectgroup>

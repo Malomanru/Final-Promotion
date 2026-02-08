@@ -13,6 +13,7 @@ function love.load(args)
 end
 
 function love.update(dt)
+    collectgarbage("step", 64)
     
     libs.physics:update(dt)
     libs.tween.updateAll(dt)

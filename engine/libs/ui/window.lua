@@ -18,6 +18,7 @@ function window.new(params)
         is_visible = (params.flags and params.flags.is_visible) ~= false,
         is_modal = (params.flags and params.flags.is_modal),
         title_hovered = false,
+        show_title = (params.flags and params.flags.show_title) ~= false,
     }
 
     self.visual = {
@@ -57,8 +58,10 @@ function window:draw()
     love.graphics.setColor(self.visual.bg_color)
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
 
-    love.graphics.setColor(self.visual.title_color)
-    love.graphics.rectangle("fill", self.x, self.y, self.width, self.visual.title_height)
+    if self.flags.show_title then
+        love.graphics.setColor(self.visual.title_color)
+        love.graphics.rectangle("fill", self.x, self.y, self.width, self.visual.title_height)
+    end
 
     love.graphics.setColor(self.visual.title_text_color)
     love.graphics.print(self.visual.title_text, self.x + 5, self.y)

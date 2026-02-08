@@ -23,6 +23,7 @@ function modalWindow:init()
             can_move = false,
             can_resize = false,
             is_visible = false,
+            show_title = false,
         },
         visual = {
             bg_color = {0,0,0,0},
@@ -65,7 +66,7 @@ function modalWindow:show(args)
             parent = self.window,
             text = config[1],
             width = 250, height = 60,
-            x = (i == 1) and 40 or 300,
+            x = ((i == 1) and 40) or 310,
             y = 160,
             callbacks = {onClick = config[2]},
             flags = {is_active = false},
