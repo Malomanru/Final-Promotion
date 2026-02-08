@@ -85,7 +85,7 @@ end
 function map:update(dt)
     if self.currentMap then self.currentMap:update(dt) end
 
-    local to_update = {self.npcs, self.colliders, self.props, self.effects}
+    local to_update = {self.npcs, self.colliders, self.props, self.effects,self.players}
     for _, group in pairs(to_update) do
         for _, obj in pairs(group) do
             if obj.update then obj:update(dt) end

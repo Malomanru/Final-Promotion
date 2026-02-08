@@ -52,7 +52,7 @@ function player.new(params)
     }
 
     self.flags = {
-        can_move = params.flags and params.flags.can_move or true,
+        can_move = (params.flags and params.flags.can_move) or true,
     }
 
     if _G.game.game_map and not _G.game.game_map.players[self] then table.insert(_G.game.game_map.players, self) end

@@ -140,10 +140,6 @@ function Tween:update(dt)
         if self.OnComplete then
             self.OnComplete()
             self.OnComplete = nil
-            self:delete()
-            if self.finished then
-                Tweens[self] = nil
-            end
         end
     end
 end

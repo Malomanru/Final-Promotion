@@ -55,14 +55,13 @@ function GlitchText.new(text, font, x, y)
         artifactChance = 0.2,
         maxArtifacts = 3
     }
-    
-    _G.game.game_map.effects[self] = self
 
     return self
 end
 
 -- Обновление эффекта
 function GlitchText:update(dt)
+    if _G.game.game_map then _G.game.game_map.effects[self] = self end
     if not self.active then return end
     
     self.time = self.time + dt * self.speed

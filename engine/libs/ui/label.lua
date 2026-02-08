@@ -48,6 +48,8 @@ function label:update(dt)
 end
 
 function label:draw()
+    local alpha = self.appearAlpha or 1
+    if alpha <= 0 then return end
     if not self.flags.is_visible then return end
 
     love.graphics.setFont(self.visual.font)
@@ -55,6 +57,7 @@ function label:draw()
     for i, line in ipairs(self.wrappedText) do
         local lineWidth = love.graphics.getFont():getWidth(line)
         local lineX = self.x_global + (self.width - lineWidth) / 2
+        love.graphics.setColor(self.visual.text_color[1], self.visual.text_color[2], self.visual.text_color[3], (self.visual.text_color[4] or 1) * alpha)
         love.graphics.print(line, lineX, (self.y_global + (self.height - (#self.wrappedText * love.graphics.getFont():getHeight() or 16)) / 2) + (i - 1) * love.graphics.getFont():getHeight() or 16)
     end
 end

@@ -6,6 +6,7 @@ local ui = {
 
 ui.modules['window'] = require("engine/libs/ui/window")
 ui.modules['button'] = require("engine/libs/ui/button")
+ui.modules['imageButton'] = require("engine/libs/ui/imageButton")
 ui.modules['label'] = require("engine/libs/ui/label")
 ui.modules['slider'] = require("engine/libs/ui/slider")
 

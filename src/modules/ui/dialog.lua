@@ -1,5 +1,6 @@
 local dialog = {
     active = false,
+    priority = 2,
     text = "",
     x = 0, y = 0,
     w = 800, h = 180,

@@ -79,6 +79,18 @@ function window:mousepressed(x, y, btn)
     end
 end
 
+function window:mousereleased(x, y, btn)
+    for _, v in pairs(self.content) do
+        if v.mousereleased then v:mousereleased(x, y, btn) end
+    end
+end
+
+function window:keypressed(key)
+    for _, v in pairs(self.content) do
+        if v.keypressed then v:keypressed(key) end
+    end
+end
+
 function window:addContent(object)
     table.insert(self.content, object)
     return object

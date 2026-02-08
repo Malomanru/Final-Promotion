@@ -13,7 +13,29 @@ end
 
 function M.AfterCamera() -- ui
     libs.ui:draw()
-    for _, v in pairs(ui) do if v.draw then v:draw() end end
+    
+    if ui.menu.active or ui.settings.active or ui.intro.active then
+        ui.background:update(love.timer.getDelta())
+    end
+    
+    local uiElements = {}
+    for name, element in pairs(ui) do
+        if element.draw and name ~= "background" then
+            table.insert(uiElements, element)
+        end
+    end
+    
+    table.sort(uiElements, function(a, b)
+        local priorityA = a.priority or 0
+        local priorityB = b.priority or 0
+        if priorityA == -1 then return false end
+        if priorityB == -1 then return true end
+        return priorityA < priorityB
+    end)
+    
+    for _, element in ipairs(uiElements) do
+        element:draw()
+    end
 
     libs.utils.debug.draw()
 end

@@ -49,7 +49,7 @@ function cam:update(dt, x, y)
         camY = math.max(halfH, math.min(camY, mapH - halfH))
     end
 
-    if not ui.dialog.active then self:lockPosition(camX, camY, self.smoother) end
+    if not ui.dialog.active or not ui.menu.active then self:lockPosition(camX, camY, self.smoother) end
 end
 
 return cam

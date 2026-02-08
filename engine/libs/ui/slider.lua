@@ -124,12 +124,14 @@ function slider:update(dt)
 end
 
 function slider:draw()
+    local alpha = self.appearAlpha or 1
+    if alpha <= 0 then return end
     if not self.flags.is_active then return end
 
     local x, y, w, h = self.x_global, self.y_global, self.width, self.height
 
     -- background
-    love.graphics.setColor(self.visual.bg_color)
+    love.graphics.setColor(self.visual.bg_color[1], self.visual.bg_color[2], self.visual.bg_color[3], (self.visual.bg_color[4] or 1) * alpha)
     love.graphics.rectangle("fill", x, y, w, h, 2)
 
     -- bar
@@ -141,7 +143,7 @@ function slider:draw()
         bar_x, bar_y = x + w/2 - self.visual.bar_height/2, y
     end
 
-    love.graphics.setColor(self.visual.bar_color)
+    love.graphics.setColor(self.visual.bar_color[1], self.visual.bar_color[2], self.visual.bar_color[3], alpha)
     love.graphics.rectangle("fill", bar_x, bar_y, bar_w, bar_h, self.visual.bar_radius)
 
     -- knob
@@ -158,10 +160,10 @@ function slider:draw()
         knob_y = bar_y + value_normalized * (bar_h - knob_size)
     end
 
-    love.graphics.setColor(self.visual.knob_color)
+    love.graphics.setColor(self.visual.knob_color[1], self.visual.knob_color[2], self.visual.knob_color[3], alpha)
     love.graphics.rectangle("fill", knob_x, knob_y, knob_size, knob_size, knob_size/2)
 
-    love.graphics.setColor(self.visual.knob_border_color)
+    love.graphics.setColor(self.visual.knob_border_color[1], self.visual.knob_border_color[2], self.visual.knob_border_color[3], alpha)
     love.graphics.setLineWidth(self.visual.knob_border_size)
     love.graphics.rectangle("line", knob_x, knob_y, knob_size, knob_size, knob_size/2)
 end
