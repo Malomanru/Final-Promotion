@@ -47,6 +47,7 @@ function background:draw()
     love.graphics.setColor(1, 1, 1, 0.2)
     love.graphics.setFont(resources.fonts.LEXIPA(12))
     love.graphics.print("Created by DREAMSPRITE Studio. All rights reserved.", 5, love.graphics.getHeight() - 30)
+    love.graphics.setColor(1,1,1,1)
 end
 
 return background

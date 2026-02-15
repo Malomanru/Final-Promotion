@@ -1,0 +1,49 @@
+menu.play {
+    RU : Играть
+    EN : Play
+}
+menu.settings {
+    RU : Настройки
+    EN : Settings
+}
+menu.exit {
+    RU : Выход
+    EN : Exit
+}
+menu.back {
+    RU : Назад
+    EN : Back
+}
+menu.subtitle {
+    RU : Нажмите любую клавишу
+    EN : Press any key
+}
+menu.ok {
+    RU : Хорошо
+    EN : OK
+}
+menu.cancel {
+    RU : Отмена
+    EN : Cancel
+}
+menu.confirmexit {
+    RU : Вы действительно хотите выйти?
+    EN : Are you sure you want to quit?
+}
+
+settings.language {
+    RU : Язык
+    EN : Language
+}
+settings.volume.general {
+    RU : Общая Громкость
+    EN : General Volume
+}
+settings.volume.music {
+    RU : Громкость Музыки
+    EN : Music Volume
+}
+settings.volume.sfx {
+    RU : Громкость Эффектов
+    EN : SFX Volume
+}

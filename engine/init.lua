@@ -2,6 +2,7 @@ return function ()
     libs = {}
     local paths = {'engine', 'engine/libs', 'engine/effects'}
 
+    utf8 = require('utf8')
     libs.windfield = require('engine/libs/windfield')
     libs.sti = require('engine.libs.sti')
     libs.AStar = require('engine.libs.AStar')

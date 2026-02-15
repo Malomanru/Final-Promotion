@@ -5,6 +5,7 @@ _G.game = {
 }
 
 function love.load(args)
+    io.write("\b")
     require('src.require')(args)
 
     init.init.game(args)
@@ -13,13 +14,14 @@ function love.load(args)
 end
 
 function love.update(dt)
-    collectgarbage("step", 64)
+    collectgarbage("step", 2048)
     
     libs.physics:update(dt)
     libs.tween.updateAll(dt)
     libs.timer:updateAll(dt)
     libs.ui:update(dt)
     libs.cam:update(dt, ((_G.game.player and _G.game.player.x) or 0), ((_G.game.player and _G.game.player.y) or 0))
+    libs.cam:setZoom(8)
 
     map:update(dt)
     
@@ -61,6 +63,10 @@ function love.keypressed(key, scancode, isrepeat)
         myText:setEffect("complex")
         myText:setIntensity(2.5)
     end
+
+    if key == "n" then
+        ui.dialog:show("act1_scene1_tv1")
+    end
 end
 
 function love.keyreleased(key, scancode, isrepeat)
@@ -78,4 +84,5 @@ function love.textinput(text)
 end
 
 function love.quit()
+    libs.data_manager:save_data(_G.game.game_path..'/options.json', _G.game.settings)
 end

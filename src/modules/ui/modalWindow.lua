@@ -34,7 +34,7 @@ end
 
 function modalWindow:show(args)
     self.text = tostring(args.text) or ""
-    self.wrappedText = libs.utils.text.wrap(self.text, resources.fonts.LEXIPA(24), 550)
+    self.wrappedText = libs.utils.text.wrap(self.text, resources.fonts.pressStart2P(24), 550)
     self.window.flags.is_visible = true
     self.active = true
     self.bgAlpha = 0
@@ -57,14 +57,14 @@ function modalWindow:show(args)
     end)
 
     local buttons_config = {
-        {"CANCEL", args._onClick_Cancel},
-        {"OK", args._onClick_OK},
+        {libs.translation.menu.cancel, args._onClick_Cancel},
+        {libs.translation.menu.ok, args._onClick_OK},
     }
 
     for i, config in ipairs(buttons_config) do
         local btn = self.window:addContent(libs.ui:newElement("button", {
             parent = self.window,
-            text = config[1],
+            text = config[1][_G.game.settings.language],
             width = 250, height = 60,
             x = ((i == 1) and 40) or 310,
             y = 160,
@@ -74,7 +74,7 @@ function modalWindow:show(args)
                 bg_color = {0.05, 0.05, 0.05, 0.9},
                 border_color = {1, 1, 1, 0.3},
                 border_width = 2,
-                font = resources.fonts.LEXIPA(20),
+                font = resources.fonts.pressStart2P(20),
                 text_color = {1, 1, 1, 1}
             }
         }))
@@ -82,6 +82,8 @@ function modalWindow:show(args)
         btn.hoverAlpha = 0
         btn.appearAlpha = 0
         btn.appearDelay = 0.3 + i * 0.15
+        btn.show_arrows = true
+        btn.changeLang = function() btn.text = config[1][_G.game.settings.language]  end
         
         btn:onMouseEnter(function()
             libs.tween.new(0.2, btn, {hoverAlpha = 1}, 'linear')
@@ -102,43 +104,7 @@ function modalWindow:show(args)
             end)
         end)
         
-        local originalDraw = btn.draw
-        btn.draw = function(self)
-            if self.appearAlpha <= 0 then return end
-            
-            love.graphics.setFont(self.visual.font)
-            love.graphics.setColor(self.visual.bg_color[1], self.visual.bg_color[2], self.visual.bg_color[3], self.visual.bg_color[4] * self.appearAlpha)
-            love.graphics.rectangle("fill", self.x_global, self.y_global, self.width, self.height)
-            
-            if self.hoverAlpha > 0 then
-                love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.1 * self.appearAlpha)
-                love.graphics.rectangle("fill", self.x_global, self.y_global, self.width, self.height)
-                
-                love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.8 * self.appearAlpha)
-                love.graphics.rectangle("fill", self.x_global, self.y_global, 3, self.height)
-                love.graphics.rectangle("fill", self.x_global + self.width - 3, self.y_global, 3, self.height)
-            end
-            
-            love.graphics.setColor(self.visual.border_color[1], self.visual.border_color[2], self.visual.border_color[3], self.visual.border_color[4] * self.appearAlpha)
-            love.graphics.setLineWidth(self.visual.border_width)
-            love.graphics.rectangle("line", self.x_global, self.y_global, self.width, self.height)
-            
-            if self.hoverAlpha > 0 then
-                love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.5 * self.appearAlpha)
-                love.graphics.rectangle("line", self.x_global - 2, self.y_global - 2, self.width + 4, self.height + 4)
-            end
-            
-            love.graphics.setColor(self.visual.text_color[1], self.visual.text_color[2], self.visual.text_color[3], self.visual.text_color[4] * self.appearAlpha)
-            local tw = self.visual.font:getWidth(self.text)
-            local th = self.visual.font:getHeight()
-            love.graphics.print(self.text, self.x_global + (self.width - tw) / 2, self.y_global + (self.height - th) / 2)
-            
-            if self.hoverAlpha > 0 then
-                love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.6 * self.appearAlpha)
-                love.graphics.print(">", self.x_global + 15, self.y_global + (self.height - th) / 2)
-                love.graphics.print("<", self.x_global + self.width - 25, self.y_global + (self.height - th) / 2)
-            end
-        end
+        btn.draw = ui.custom.button.draw
     end
 end
 
@@ -181,7 +147,7 @@ function modalWindow:draw()
     love.graphics.setLineWidth(2)
     love.graphics.rectangle("line", self.window.x, self.window.y, self.window.width, self.window.height)
     
-    love.graphics.setFont(resources.fonts.LEXIPA(24))
+    love.graphics.setFont(resources.fonts.pressStart2P(24))
     for i, line in ipairs(self.wrappedText) do
         local lineWidth = love.graphics.getFont():getWidth(line)
         local lineX = self.window.x + (self.window.width - lineWidth) / 2

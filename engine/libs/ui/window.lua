@@ -32,6 +32,7 @@ function window.new(params)
         border_size = (params.visual and params.visual.border_size) or 1,
         border_radius = (params.visual and params.visual.border_radius) or 0,
         border_color = (params.visual and params.visual.border_color) or libs.utils.rgb(0, 0, 0),
+        border_width = (params.visual and params.visual.border_width) or 1,
     }
 
     table.insert(libs.ui.windows, self)
@@ -67,7 +68,9 @@ function window:draw()
     love.graphics.print(self.visual.title_text, self.x + 5, self.y)
 
     love.graphics.setColor(self.visual.border_color)
+    love.graphics.setLineWidth(self.visual.border_width)
     love.graphics.rectangle("line", self.x, self.y, self.width, self.height, self.visual.border_radius)
+    love.graphics.setLineWidth(1)
 
     love.graphics.setColor(1,1,1)
 
@@ -103,6 +106,14 @@ function window:setActiveElements(type, value)
     for _, element in pairs(self.content) do
         if element.type and element.type == type then element.flags.is_active = value end
     end
+end
+
+function window:getPosition()
+    return self.x, self.y
+end
+
+function window:setPosition(x, y)
+    self.x, self.y = x, y
 end
 
 return window

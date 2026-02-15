@@ -21,6 +21,7 @@ function label.new(params)
 
     self.flags = {
         is_visible = (params.flags and params.flags.is_visible) or true,
+        follow_parent = (params.flags and params.flags.follow_parent) or true,
     }
 
     self.visual = {
@@ -38,7 +39,7 @@ function label.new(params)
 end
 
 function label:update(dt)
-    if self.parent then
+    if self.parent and self.flags.follow_parent then
         self.x_global = self.parent.x + self.x_local
         self.y_global = self.parent.y + self.y_local
     else
@@ -60,6 +61,11 @@ function label:draw()
         love.graphics.setColor(self.visual.text_color[1], self.visual.text_color[2], self.visual.text_color[3], (self.visual.text_color[4] or 1) * alpha)
         love.graphics.print(line, lineX, (self.y_global + (self.height - (#self.wrappedText * love.graphics.getFont():getHeight() or 16)) / 2) + (i - 1) * love.graphics.getFont():getHeight() or 16)
     end
+end
+
+function label:setText(text)
+    self.text = text
+    self.wrappedText = libs.utils.text.wrap(text, self.visual.font, self.width + (self.width/100)*10)
 end
 
 return label

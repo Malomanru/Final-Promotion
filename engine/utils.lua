@@ -464,37 +464,66 @@ function utils.text.wrap(text, font, maxWidth)
     font:setFilter("nearest", "nearest")
 
     local wrappedText = {}
-    
-    if not text or text == "" then 
-        return 
+
+    if not text or text == "" then
+        return wrappedText
     end
-    
+
     local remainingText = text
-    
+
     while #remainingText > 0 do
-        local line
-        local width = font:getWidth(remainingText)
-        
-        if width <= maxWidth then
-            line = remainingText
-            remainingText = ""
-        else
-            local i = 1
-            while font:getWidth(remainingText:sub(1, i)) <= maxWidth do
-                i = i + 1
-            end
-            local spacePos = remainingText:sub(1, i):reverse():find(" ")
-            if spacePos then
-                i = i - spacePos
-            end
-            line = remainingText:sub(1, i):gsub("^%s*(.-)%s*$", "%1")
-            remainingText = remainingText:sub(i + 1):gsub("^%s+", "")
+        local line = ""
+        local i = 1
+        local chars = {}
+        for c in remainingText:gmatch("[%z\1-\127\194-\244][\128-\191]*") do
+            table.insert(chars, c)
         end
-        
+
+        -- собираем строку символ за символом
+        while i <= #chars do
+            local testLine = table.concat(chars, "", 1, i)
+            local success, width = pcall(function() return font:getWidth(testLine) end)
+            if not success then
+                chars[i] = "" -- удаляем проблемный символ
+                width = font:getWidth(table.concat(chars, "", 1, i))
+            end
+
+            if width > maxWidth then
+                break
+            end
+            i = i + 1
+        end
+
+        -- ищем последний пробел для переноса
+        local splitAt = i - 1
+        for j = i - 1, 1, -1 do
+            if chars[j]:match("%s") then
+                splitAt = j
+                break
+            end
+        end
+
+        line = table.concat(chars, "", 1, splitAt)
         table.insert(wrappedText, line)
+
+        remainingText = table.concat(chars, "", splitAt + 1, #chars):gsub("^%s+", "")
     end
-    
+
     return wrappedText
+end
+
+-- { For this game } --
+utils.game = {}
+
+utils.game.updateLanguage = function(lang)
+    _G.game.settings.language = lang
+
+    for _, v in pairs(ui) do
+        if (type(v) ~= "function") and v.window then for _, element in pairs(v.window.content) do
+            if type(element) ~= "function" and element.changeLang then element:changeLang() end
+            end
+        end
+    end
 end
 
 return utils

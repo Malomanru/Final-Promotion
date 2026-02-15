@@ -9,8 +9,26 @@ local menu = {
     state = "title",
     buttonsAlpha = 0,
     mainTitleAlpha = 1,
-    socialButtons = {}
+    socialButtons = {},
 }
+
+function menu:confirmExit(text)
+    ui.modalWindow:show{
+        text = libs.translation.menu.confirmexit[_G.game.settings.language],
+        _onClick_OK = function() love.event.quit() end,
+        _onClick_Cancel = function() 
+            ui.modalWindow:hide()
+            self.window:setActiveElements("button", true)
+        end
+    }
+end
+
+function menu:startGame()
+    _G.game.player = player.new()
+    map:load("map2") _G.game.player:setPosition(100, 100) 
+    self:hide()
+    self.window:setActiveElements("button", false)
+end
 
 function menu:init()
     self.window = libs.ui:newElement("window", {
@@ -29,8 +47,8 @@ function menu:init()
     })
     
     local buttons_config = {
-        {"PLAY", function() map:load("map2") _G.game.player = player.new() _G.game.player:setPosition(100, 100) self:hide() end},
-        {"SETTINGS", function()
+        {libs.translation.menu.play, function() ui.load_game:show() self:hide() self.window:setActiveElements("button", false) end},
+        {libs.translation.menu.settings, function()
             libs.tween.new(0.4, self, {mainTitleAlpha = 0}, 'outQuad')
             for _, btn in pairs(self.window.content) do
                 btn:setActive(false)
@@ -42,27 +60,16 @@ function menu:init()
                 ui.settings:show()
             end)
         end},
-        {"QUIT", function()
-            for _, btn in pairs(self.window.content) do
-                btn:setActive(false)
-            end
-            ui.modalWindow:show{
-                text = "Are you sure you want to quit?",
-                _onClick_OK = function() love.event.quit() end,
-                _onClick_Cancel = function() 
-                    ui.modalWindow:hide()
-                    for _, btn in pairs(self.window.content) do
-                        btn:setActive(true)
-                    end
-                end
-            }
+        {libs.translation.menu.exit, function()
+            self.window:setActiveElements("button", false)
+            self:confirmExit()
         end},
     }
 
     for i, config in pairs(buttons_config) do
         local btn = self.window:addContent(libs.ui:newElement("button", {
             parent = self.window,
-            text = config[1],
+            text = config[1][_G.game.settings.language],
             callbacks = {onClick = config[2]},
             width = 400,
             height = 60,
@@ -73,7 +80,7 @@ function menu:init()
                 bg_color = {0.05, 0.05, 0.05, 0.9},
                 border_color = {1, 1, 1, 0.3},
                 border_width = 2,
-                font = resources.fonts.LEXIPA(20),
+                font = resources.fonts.pressStart2P(20),
                 text_color = {1, 1, 1, 1}
             }
         }))
@@ -82,10 +89,9 @@ function menu:init()
         btn.hoverAlpha = 0
         btn.appearAlpha = 0
         btn.appearDelay = i * 0.2
-        
-        local originalUpdate = btn.update
-        btn.update = function(self, dt)
-            if originalUpdate then originalUpdate(self, dt) end
+        btn.show_arrows = true
+        btn.changeLang = function()
+            btn.text = config[1][_G.game.settings.language]
         end
         
         btn:onMouseEnter(function()
@@ -95,49 +101,8 @@ function menu:init()
         btn:onMouseLeave(function()
             libs.tween.new(0.2, btn, {hoverAlpha = 0}, 'linear')
         end)
-        
-        local originalDraw = btn.draw
-        btn.draw = function(self)
-            if self.appearAlpha <= 0 and math.abs(self.slideX) < love.graphics.getWidth() then return end
-            
-            love.graphics.push()
-            love.graphics.translate(self.slideX, 0)
-            
-            love.graphics.setFont(self.visual.font)
-            love.graphics.setColor(self.visual.bg_color[1], self.visual.bg_color[2], self.visual.bg_color[3], self.visual.bg_color[4] * self.appearAlpha)
-            love.graphics.rectangle("fill", self.x_global, self.y_global, self.width, self.height)
-            
-            if self.hoverAlpha > 0 then
-                love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.1 * self.appearAlpha)
-                love.graphics.rectangle("fill", self.x_global, self.y_global, self.width, self.height)
-                
-                love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.8 * self.appearAlpha)
-                love.graphics.rectangle("fill", self.x_global, self.y_global, 3, self.height)
-                love.graphics.rectangle("fill", self.x_global + self.width - 3, self.y_global, 3, self.height)
-            end
-            
-            love.graphics.setColor(self.visual.border_color[1], self.visual.border_color[2], self.visual.border_color[3], self.visual.border_color[4] * self.appearAlpha)
-            love.graphics.setLineWidth(self.visual.border_width)
-            love.graphics.rectangle("line", self.x_global, self.y_global, self.width, self.height)
-            
-            if self.hoverAlpha > 0 then
-                love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.5 * self.appearAlpha)
-                love.graphics.rectangle("line", self.x_global - 2, self.y_global - 2, self.width + 4, self.height + 4)
-            end
-            
-            love.graphics.setColor(self.visual.text_color[1], self.visual.text_color[2], self.visual.text_color[3], self.visual.text_color[4] * self.appearAlpha)
-            local tw = self.visual.font:getWidth(self.text)
-            local th = self.visual.font:getHeight()
-            love.graphics.print(self.text, self.x_global + (self.width - tw) / 2, self.y_global + (self.height - th) / 2)
-            
-            if self.hoverAlpha > 0 then
-                love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.6 * self.appearAlpha)
-                love.graphics.print(">", self.x_global + 15, self.y_global + (self.height - th) / 2)
-                love.graphics.print("<", self.x_global + self.width - 25, self.y_global + (self.height - th) / 2)
-            end
-            
-            love.graphics.pop()
-        end
+
+        btn.draw = ui.custom.button.draw
     end
     
     local socialIcons = {
@@ -262,13 +227,13 @@ function menu:draw()
     -- { Subtitle } --
 
     if self.state == "title" then
-        local subtitle = "Press any key"
-        local smallFont = resources.fonts.LEXIPA(14)
+        local subtitle = libs.translation.menu.subtitle[_G.game.settings.language]
+        local smallFont = resources.fonts.pressStart2P(14)
         love.graphics.setFont(smallFont)
         local stw = smallFont:getWidth(subtitle)
         local pulse = math.sin(self.time * 2) * 0.3 + 0.7
         love.graphics.setColor(1, 1, 1, self.titleAlpha * 0.5 * pulse)
-        love.graphics.print(subtitle, -stw/2, 60)
+        love.graphics.print(subtitle, -stw/2, 70)
     end
     
     love.graphics.pop()
@@ -287,6 +252,11 @@ function menu:keypressed(key)
     if self.state == "title" then
         self.state = "menu"
         self:showButtons()
+    end
+    if self.state == "menu" then
+        if key == "escape" then
+            self:confirmExit()
+        end
     end
 end
 

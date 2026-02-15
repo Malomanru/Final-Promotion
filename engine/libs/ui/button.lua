@@ -21,10 +21,11 @@ function button.new(params)
 
     self.flags = {
         hovered = false,
-        is_visible = (params.flags and params.flags.is_visible) ~= false,
-        is_active = (params.flags and params.flags.is_active) ~= false,
+        is_visible = (params.flags and params.flags.is_visible) or false,
+        is_active = (params.flags and params.flags.is_active) or false,
         was_pressed = false,
         was_hovered_last_frame = false,
+        follow_parent = (params.flags and params.flags.follow_parent) or true,
     }
     
     self.callbacks = {
@@ -50,11 +51,17 @@ function button.new(params)
         self.y_global = self.y_local
     end
 
+    for k, v in pairs(params) do
+        if self[k] == nil then
+            self[k] = v
+        end
+    end
+
     return self
 end
 
 function button:update(dt)
-    if self.parent then
+    if self.parent and self.flags.follow_parent then
         self.x_global = self.parent.x + self.x_local
         self.y_global = self.parent.y + self.y_local
     else

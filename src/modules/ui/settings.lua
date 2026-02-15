@@ -13,6 +13,8 @@ local volume_map = {
     sfx_volume = "sfx"
 }
 
+local languages = { "EN", "RU" }
+
 function settings:init()
     self.window = libs.ui:newElement("window", {
         x = (love.graphics.getWidth()/2) - 400,
@@ -32,19 +34,19 @@ function settings:init()
     })
 
     local sliders = {
-        {"general_volume", 150, _G.game.settings.volume.general, "GENERAL VOLUME"},
-        {"music_volume", 250, _G.game.settings.volume.music, "MUSIC VOLUME"},
-        {"sfx_volume", 350, _G.game.settings.volume.sfx, "SFX VOLUME"},
+        {"general_volume", 150, _G.game.settings.volume.general, libs.translation.settings.volume.general},
+        {"music_volume", 250, _G.game.settings.volume.music, libs.translation.settings.volume.music},
+        {"sfx_volume", 350, _G.game.settings.volume.sfx, libs.translation.settings.volume.sfx},
     }
 
     for i, sliderData in ipairs(sliders) do
         local label = self.window:addContent(libs.ui:newElement("label", {
             parent = self.window,
-            text = sliderData[4],
+            text = sliderData[4][_G.game.settings.language],
             x = 30,
             y = sliderData[2] - 50,
             visual = { 
-                font = resources.fonts.LEXIPA(18),
+                font = resources.fonts.pressStart2P(12),
                 text_color = {1, 1, 1, 1}
             }
         }))
@@ -72,27 +74,126 @@ function settings:init()
         label.slideX = slider.slideX
         label.appearAlpha = 0
         label.appearDelay = slider.appearDelay
+        label.changeLang = function()
+            label:setText(sliderData[4][_G.game.settings.language])
+        end
     end
 
+    ----------------------------------------------------------------
+    -- LANGUAGE SELECTOR                                          --
+    ----------------------------------------------------------------
+
+    local langY = 430
+
+    local langLabel = self.window:addContent(libs.ui:newElement("label", {
+        parent = self.window,
+        text = libs.translation.settings.language[_G.game.settings.language],
+        x = 30,
+        y = langY - 50,
+        visual = {
+            font = resources.fonts.pressStart2P(18),
+            text_color = {1, 1, 1, 1}
+        }
+    }))
+    langLabel.changeLang = function() langLabel:setText(libs.translation.settings.language[_G.game.settings.language]) end
+
+    local langIndex = 1
+
+    for i, lang in ipairs(languages) do
+        if lang == (_G.game.settings.language or "EN") then
+            langIndex = i
+            break
+        end
+    end
+
+    local langDisplay = self.window:addContent(libs.ui:newElement("label", {
+        parent = self.window,
+        text = languages[langIndex],
+        x = 350,
+        y = langY,
+        visual = {
+            font = resources.fonts.pressStart2P(28),
+            text_color = {1,1,1,1}
+        }
+    }))
+    langDisplay.changeLang = function() langDisplay:setText(languages[langIndex]) end
+
+    for i = 1, 2 do
+        local btn = self.window:addContent(libs.ui:newElement("button", {
+            parent = self.window,
+            text = (i == 1) and "<" or ">",
+            width = 60,
+            height = 60,
+            x = (i == 1) and 240 or 500,
+            y = 420,
+            flags = { is_active = false },
+            visual = {
+                bg_color = {0.05, 0.05, 0.05, 0.9},
+                border_color = {1, 1, 1, 0.3},
+                border_width = 2,
+                font = resources.fonts.pressStart2P(20),
+                text_color = {1, 1, 1, 1}
+            },
+            callbacks = {
+                onClick = function()
+                    if i == 1 then
+                        langIndex = langIndex - 1
+                        if langIndex < 1 then langIndex = #languages end
+                    else
+                        langIndex = langIndex + 1
+                        if langIndex > #languages then langIndex = 1 end
+                    end
+                    libs.utils.game.updateLanguage(languages[langIndex])
+                    _G.game.settings.language = languages[langIndex]
+                end,
+            }
+        }))
+
+        btn.slideX = 0
+        btn.appearAlpha = 0
+        btn.appearDelay = 0.6
+        btn.hoverAlpha = 0
+
+        btn:onMouseEnter(function()
+            libs.tween.new(0.2, btn, {hoverAlpha = 1}, 'linear')
+        end)
+        
+        btn:onMouseLeave(function()
+            libs.tween.new(0.2, btn, {hoverAlpha = 0}, 'linear')
+        end)
+
+        btn.draw = ui.custom.button.draw
+    end
+
+    for _, element in ipairs({langLabel, langDisplay, leftArrow, rightArrow}) do
+        element.slideX = love.graphics.getWidth()
+        element.appearAlpha = 0
+        element.appearDelay = 0.45
+    end
+
+    ----------------------------------------------------------------
+    -- BACK BUTTON                                                --
+    ----------------------------------------------------------------
     local backBtn = self.window:addContent(libs.ui:newElement("button", {
         parent = self.window,
-        text = "BACK",
+        text = libs.translation.menu.back[_G.game.settings.language],
         callbacks = {
             onClick = function()
                 libs.data_manager:save_data(_G.game.game_path..'/options.json', _G.game.settings)
                 self:hide()
+                ui.menu.window:setActiveElements("button", true)
             end
         },
         width = 400,
         height = 60,
         x = 200,
-        y = 480,
-        flags = { is_active = false },
+        y = 500,
+        flags = { is_active = false},
         visual = {
             bg_color = {0.05, 0.05, 0.05, 0.9},
             border_color = {1, 1, 1, 0.3},
             border_width = 2,
-            font = resources.fonts.LEXIPA(20),
+            font = resources.fonts.pressStart2P(20),
             text_color = {1, 1, 1, 1}
         }
     }))
@@ -101,6 +202,8 @@ function settings:init()
     backBtn.appearAlpha = 0
     backBtn.appearDelay = 0.6
     backBtn.hoverAlpha = 0
+    backBtn.show_arrows = true
+    backBtn.changeLang = function() backBtn.text = libs.translation.menu.back[_G.game.settings.language] end
     
     backBtn:onMouseEnter(function()
         libs.tween.new(0.2, backBtn, {hoverAlpha = 1}, 'linear')
@@ -110,48 +213,7 @@ function settings:init()
         libs.tween.new(0.2, backBtn, {hoverAlpha = 0}, 'linear')
     end)
     
-    local originalDraw = backBtn.draw
-    backBtn.draw = function(self)
-        if self.appearAlpha <= 0 then return end
-        
-        love.graphics.push()
-        love.graphics.translate(self.slideX, 0)
-        
-        love.graphics.setFont(self.visual.font)
-        love.graphics.setColor(self.visual.bg_color[1], self.visual.bg_color[2], self.visual.bg_color[3], self.visual.bg_color[4] * self.appearAlpha)
-        love.graphics.rectangle("fill", self.x_global, self.y_global, self.width, self.height)
-        
-        if self.hoverAlpha > 0 then
-            love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.1 * self.appearAlpha)
-            love.graphics.rectangle("fill", self.x_global, self.y_global, self.width, self.height)
-            
-            love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.8 * self.appearAlpha)
-            love.graphics.rectangle("fill", self.x_global, self.y_global, 3, self.height)
-            love.graphics.rectangle("fill", self.x_global + self.width - 3, self.y_global, 3, self.height)
-        end
-        
-        love.graphics.setColor(self.visual.border_color[1], self.visual.border_color[2], self.visual.border_color[3], self.visual.border_color[4] * self.appearAlpha)
-        love.graphics.setLineWidth(self.visual.border_width)
-        love.graphics.rectangle("line", self.x_global, self.y_global, self.width, self.height)
-        
-        if self.hoverAlpha > 0 then
-            love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.5 * self.appearAlpha)
-            love.graphics.rectangle("line", self.x_global - 2, self.y_global - 2, self.width + 4, self.height + 4)
-        end
-        
-        love.graphics.setColor(self.visual.text_color[1], self.visual.text_color[2], self.visual.text_color[3], self.visual.text_color[4] * self.appearAlpha)
-        local tw = self.visual.font:getWidth(self.text)
-        local th = self.visual.font:getHeight()
-        love.graphics.print(self.text, self.x_global + (self.width - tw) / 2, self.y_global + (self.height - th) / 2)
-        
-        if self.hoverAlpha > 0 then
-            love.graphics.setColor(1, 1, 1, self.hoverAlpha * 0.6 * self.appearAlpha)
-            love.graphics.print(">", self.x_global + 15, self.y_global + (self.height - th) / 2)
-            love.graphics.print("<", self.x_global + self.width - 25, self.y_global + (self.height - th) / 2)
-        end
-        
-        love.graphics.pop()
-    end
+    backBtn.draw = ui.custom.button.draw
 end
 
 function settings:show()
@@ -220,8 +282,8 @@ function settings:draw()
     love.graphics.translate(love.graphics.getWidth() / 2, 80)
     love.graphics.scale(self.titleScale, self.titleScale)
     
-    local title = "SETTINGS"
-    local font = resources.fonts.LEXIPA(42)
+    local title = libs.translation.settings.language[_G.game.settings.language]
+    local font = resources.fonts.pressStart2P(42)
     love.graphics.setFont(font)
     local tw = font:getWidth(title)
     

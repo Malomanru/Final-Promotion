@@ -195,4 +195,13 @@ function map:getPropOnPosition(x, y)
         end
     end
 end
+
+function map:serialize()
+    return {
+        npcs = table.show(self.npcs),
+        props = table.show(self.props),
+        effects = table.show(self.effects),
+    }
+end
+
 return map

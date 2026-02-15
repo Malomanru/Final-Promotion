@@ -1,182 +1,138 @@
-local dialog = {
-    active = false,
-    priority = 2,
-    text = "",
-    x = 0, y = 0,
-    w = 800, h = 180,
+local dialogue = {
+    lines = {},
+    currentLine = 1,
+    currentChar = 1,
     queue = {},
-    choices = {},
-    index = 1,
-    wrappedText = {},
-    cam = {x = 0, y = 0, zoom = 8, locked = false},
-    type_delay = 0,
+    isPrinting = false,
+    printSpeed = 0.05,
+    timer = 0,
+    window = nil,
+    font = resources.fonts.pressStart2P(24),
+    fullTextChars = {}
 }
 
-function dialog:show(replics, camX, camY, zoom)
-    self.index = 1
-    self.queue = replics
-    self.type_delay = 0
-    self.typing_active = true
-    self.current_typed_text = ""
-    self.full_text = replics[self.index]
-    
-    self.text = self.current_typed_text
-    libs.utils.text.wrap(self.text, resources.fonts.LEXIPA(34), 780)
-    
-    self.cam.x, self.cam.y = camX, camY
-    self.active = true
-    self.y = love.graphics.getHeight()
-    
-    libs.tween.new(0.25, self.cam, {zoom = zoom or 10}, "inOutBack")
-    libs.tween.new(0.25, self, {y = love.graphics.getHeight() - 200}, "inOutBack", function ()
-        self.cam.locked = true
-    end)
-    
-    _G.game.player.flags.can_move = false
+function dialogue:init()
+    self.window = libs.ui:newElement("window", {
+        x = 0, y = 0,
+        width = 800, height = 200,
+        flags = {
+            can_resize = false,
+            can_move = false,
+            is_visible = false,
+            show_title = false,
+        },
+        visual = {
+            bg_color = {0.05,0.05,0.05,0.9},
+            border_color = {1,1,1,0.3},
+            border_width = 2,
+            title_color = {0,0,0,0},
+        },
+    })
 end
 
-function dialog:hide()
-    libs.tween.new(0.25, self.cam, {zoom = 8}, "inOutBack")
-    libs.tween.new(0.25, self, {y = love.graphics.getHeight()}, "inOutBack",
-    function()
-        self.active = false
-        self.cam.locked = false
-        self.index = 1
-        self.queue = {}
-        self.text = ""
-        self.wrappedText = {}
-        self.typing_active = false
-        self.current_typed_text = ""
-        self.full_text = ""
-        _G.game.player.flags.can_move = true
-    end)
+function dialogue:load(filename)
+    local result = {}
+    local file = io.open(filename, "r")
+    if not file then return nil, "Cannot open file: " .. filename end
+
+    local lineNumber = 1
+    for line in file:lines() do
+        result["line"..lineNumber] = line
+        lineNumber = lineNumber + 1
+    end
+
+    file:close()
+    self.lines = result
+    self.currentLine = 1
+    self.currentChar = 1
+    self.queue = {}
+    self.isPrinting = false
 end
 
-function dialog:draw()
-    if not self.active then return end
+function dialogue:show(name)
+    local path = "src/assets/dialogues/" .. name .. "." .. _G.game.settings.language
+    self:load(path)
+    self.currentLine = 1
+    self.currentChar = 1
+    self:prepareLine()
     
-    love.graphics.setColor(0, 0, 0, 0.5)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 10, 10)
-    love.graphics.rectangle("fill", self.x + self.w + 15, self.y, self.w/4, self.h, 10, 10)
-    love.graphics.setColor(libs.utils.rgb(140, 140, 140))
+    self.window:setPosition((love.graphics.getWidth() - self.window.width)/2, love.graphics.getHeight() + self.window.height)
+    self.window.flags.is_visible = true
+    libs.tween.new(0.25, self.window, {y = love.graphics.getHeight() - self.window.height - 50}, 'quad')
+end
 
-    love.graphics.rectangle("line", self.x, self.y, self.w, self.h, 10, 10)
-    love.graphics.rectangle("line", self.x + self.w + 15, self.y, self.w/4, self.h, 10, 10)
+function dialogue:prepareLine()
+    local line = self.lines["line"..self.currentLine] or ""
+    self.queue = libs.utils.text.wrap(line, self.font, self.window.width - 10)
+    -- создаём массив символов UTF-8
+    self.fullTextChars = {}
+    for c in table.concat(self.queue, "\n"):gmatch("[%z\1-\127\194-\244][\128-\191]*") do
+        table.insert(self.fullTextChars, c)
+    end
+    self.currentChar = 1
+    self.isPrinting = true
+end
 
-    love.graphics.setColor(1, 1, 1, 1)
-    
-    local font = resources.fonts.LEXIPA(34)
-    local lineHeight = font:getHeight() or 16
-    
-    love.graphics.setFont(resources.fonts.LEXIPA(34))
-
-    for i, line in ipairs(self.wrappedText) do
-        local lineWidth = font:getWidth(line)
-        local lineX = self.x + (self.w - lineWidth) / 2
-        love.graphics.print(line, lineX, (self.y + (self.h - (#self.wrappedText * lineHeight)) / 2) + (i - 1) * lineHeight)
+function dialogue:next()
+    self.currentLine = self.currentLine + 1
+    local line = self.lines["line"..self.currentLine]
+    if line then
+        self:prepareLine()
+    else
+        self.isPrinting = false
     end
 end
 
-function dialog:update(dt)
-    self.x = love.graphics.getWidth()/2 - 500
-    libs.cam:setZoom(self.cam.zoom)
-
-    if self.cam.locked then
-        libs.cam:lockPosition(self.cam.x, self.cam.y)
-    end
-    
-    if self.active and self.typing_active then
-        self.type_delay = self.type_delay + dt
-        
-        if self.type_delay >= 0.05 then
-            self.type_delay = 0
-            
-            local next_char_index = #self.current_typed_text + 1
-            if next_char_index <= #self.full_text then
-                self.current_typed_text = self.full_text:sub(1, next_char_index)
-                self.text = self.current_typed_text
-                libs.utils.text.wrap(self.text, resources.fonts.LEXIPA(34), 780)
-            else
-                self.typing_active = false
-            end
+function dialogue:update(dt)
+    if not self.isPrinting then return end
+    self.timer = self.timer + dt
+    if self.timer >= self.printSpeed then
+        self.timer = self.timer - self.printSpeed
+        self.currentChar = self.currentChar + 1
+        if self.currentChar > #self.fullTextChars then
+            self.currentChar = #self.fullTextChars
+            self.isPrinting = false
         end
     end
 end
 
-function dialog:next()
-    if self.typing_active then
-        self.typing_active = false
-        self.current_typed_text = self.full_text
-        self.text = self.current_typed_text
-        libs.utils.text.wrap(self.text, resources.fonts.LEXIPA(34), 780)
-        return
-    end
-    
-    self.index = self.index + 1
-    
-    if self.index <= #self.queue then
-        self.type_delay = 0
-        self.typing_active = true
-        self.current_typed_text = ""
-        self.full_text = self.queue[self.index]
-        self.text = self.current_typed_text
-        libs.utils.text.wrap(self.text, resources.fonts.LEXIPA(34), 780)
-    else
-        self:hide()
-    end
-end
-
-function dialog:prev()
-    if self.index > 1 then
-        self.index = self.index - 1
-        self.type_delay = 0
-        self.typing_active = true
-        self.current_typed_text = ""
-        self.full_text = self.queue[self.index]
-        self.text = self.current_typed_text
-        libs.utils.text.wrap(self.text, resources.fonts.LEXIPA(34), 780)
-    end
-end
-
-function dialog:keypressed(key)
-    if not self.active then return end
-    
+function dialogue:keypressed(key)
     if key == "space" then
-        self:next()
-    end
-end
-
-function dialog:typeText(text, delay)
-    delay = delay or 0.05
-    local current_index = 0
-    
-    return function()
-        current_index = current_index + 1
-        if current_index <= #text then
-            return text:sub(1, current_index)
-        else
-            return text
+        if self.isPrinting then
+            self.isPrinting = false
+            self.currentChar = #self.fullTextChars
+        elseif not self.isPrinting then
+            self:next()
         end
     end
 end
 
-function dialog:load(name)
-    if not name then return end
+function dialogue:draw()
+    love.graphics.setFont(self.font)
+    local visibleChars = {}
+    for i = 1, math.min(self.currentChar, #self.fullTextChars) do
+        table.insert(visibleChars, self.fullTextChars[i])
+    end
+    local textToDraw = table.concat(visibleChars)
 
-    local file = io.open('src/assets/dialogs/'..name..'.en')
-    if file then
-        local content = file:read("*all")
-        file:close()
-        
-        local lines = {}
-        for line in content:gmatch("[^\r\n]+") do
-            table.insert(lines, line)
+    -- разбиваем на строки с переносом
+    local lines = {}
+    for line in textToDraw:gmatch("[^\n]+") do
+        local wrapped = libs.utils.text.wrap(line, self.font, self.window.width - 10)
+        for _, wline in ipairs(wrapped) do
+            table.insert(lines, wline)
         end
-        
-        return lines
-    else
-        return {}
+    end
+
+    -- центрируем по вертикали
+    local totalHeight = #lines * self.font:getHeight()
+    local startY = self.window.y + (self.window.height - totalHeight)/2
+
+    for i, line in ipairs(lines) do
+        local lineWidth = self.font:getWidth(line)
+        local startX = self.window.x + (self.window.width - lineWidth)/2
+        love.graphics.print(line, startX, startY + (i-1)*self.font:getHeight())
     end
 end
 
-return dialog
+return dialogue

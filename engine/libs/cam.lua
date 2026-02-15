@@ -29,13 +29,12 @@ function cam:updateScale(window)
     self.zoomLevel = math.max(self.minZoom, math.min(ratio, self.maxZoom))
     self:zoomTo(self.zoomLevel)
     
-    -- Также обновить позицию после изменения масштаба
     if self.x and self.y then
         self:update(0, self.x, self.y)
     end
 end
 
-function cam:update(dt, x, y)
+function cam:update(dt, x, y, zoom)
     local camX, camY = x or self.x, y or self.y
     local w = love.graphics.getWidth() / self.zoomLevel
     local h = love.graphics.getHeight() / self.zoomLevel
